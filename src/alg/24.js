@@ -34,4 +34,4 @@ function calc(arr) {
   return 'NONE';
 }
 
-console.log(calc([1, 2, 3, 4]));
+console.log(calc([24, 2, 8, 10]));
