@@ -16,27 +16,27 @@ function start(routes, source, target) {
   // console.log(graph);
   const res = [];
   function dfs(curSite, cost = 0, path = [], visitedLine = new Set(), visitedSite = new Set([source])) {
-    if (curSite === target) {
+    if (curSite === target) { // 找到目标站，记录结果
       // console.log('path:', path);
       res.push([cost, ...path]);
     }
-    if (path.length >= 3) return;
-    for (const line of graph[curSite]) {
-      // 这条线已经走过了
-      if (visitedLine.has(line)) continue;
-      visitedLine.add(line);
-      for (const site of routes[line]) {
-        if (visitedSite.has(site)) continue;
-        const curCost = getCost(line, curSite, site);
-        visitedSite.add(site);
-        path.push({ line, on: curSite, off: site });
-        cost += curCost;
-        dfs(site, cost, path, visitedLine, visitedSite);
-        visitedSite.delete(site);
-        path.pop();
-        cost -= curCost;
+    if (path.length >= 3) return; // 换乘超过3次则终止
+    for (const line of graph[curSite]) { // 循环这个站可以坐的地铁线
+      if (visitedLine.has(line)) continue; // 这条线已经走过了
+      visitedLine.add(line); // 记录走过的路线
+      for (const site of routes[line]) { // 循环当前线所有站点
+        if (visitedSite.has(site)) continue; // 这个站已经走过了
+        const curCost = getCost(line, curSite, site); // 获取经过的站点数
+        visitedSite.add(site); // 记录走过的站
+        path.push({ line, on: curSite, off: site }); // 记录当前路线
+        cost += curCost; // 统计总共走的站点数
+        dfs(site, cost, path, visitedLine, visitedSite); // 把当前循环的站当作目标站 递归
+        // 未成功找到target，返回原状态
+        visitedSite.delete(site); // 返回原状态
+        path.pop(); // 返回原状态
+        cost -= curCost; // 返回原状态
       }
-      visitedLine.delete(line);
+      visitedLine.delete(line); // 返回原状态
     }
   }
   dfs(source, 0, []);
@@ -66,8 +66,8 @@ const routes = {
   11: ['福田', '车公庙', '红树湾南', '后海', '南山', '前海湾', '宝安', '碧海湾', '机场', '机场北', '福永', '桥头', '塘尾', '马安山', '沙井', '后亭', '松岗', '碧头'],
 };
 
-const source = '兴东';
-const target = '白石洲';
+const source = '宝安中心';
+const target = '梧桐山南';
 
 const plans = start(routes, source, target);
 for (const plan of plans) {
