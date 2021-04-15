@@ -22,15 +22,15 @@ function start(routes, source, target) {
     }
     if (path.length >= 3) return; // 换乘超过3次则终止
     for (const line of graph[curSite]) { // 循环这个站可以坐的地铁线
-      if (visitedLine.has(line)) continue; // 这条线已经走过了
+      if (visitedLine.has(line)) continue; // 这条线已经坐过了
       visitedLine.add(line); // 记录走过的路线
       for (const site of routes[line]) { // 循环当前线所有站点
-        if (visitedSite.has(site)) continue; // 这个站已经走过了
+        if (visitedSite.has(site)) continue; // 这个站已经坐过了
         const curCost = getCost(line, curSite, site); // 获取经过的站点数
         visitedSite.add(site); // 记录走过的站
         path.push({ line, on: curSite, off: site }); // 记录当前路线
         cost += curCost; // 统计总共走的站点数
-        dfs(site, cost, path, visitedLine, visitedSite); // 把当前循环的站当作目标站 递归
+        dfs(site, cost, path, visitedLine, visitedSite); // 把当前循环的站当作起点站 递归
         // 未成功找到target，返回原状态
         visitedSite.delete(site); // 返回原状态
         path.pop(); // 返回原状态
